@@ -13,7 +13,7 @@ The repository is structured as follows:
 - `results` contains the results for the simulation study and the estimated model
 object for the seismic application
 
-After having the cloned the repository to your local system, the `IncRegHelpers`
+After having cloned the repository to your local system, the `IncRegHelpers`
 package can be installed using the following call:
 ```r
 devtools::install("IncRegHelpers")
