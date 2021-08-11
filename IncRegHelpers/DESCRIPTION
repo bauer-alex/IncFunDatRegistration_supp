@@ -1,0 +1,22 @@
+Package: IncRegHelpers
+Title: Helper functions for the code supplement
+Version: 1.0
+Authors@R: 
+    person("Alexander", "Bauer", role = c("aut", "cre"),
+           email = "alexander.bauer@stat.uni-muenchen.de",
+           comment = c(ORCID = "0000-0003-3495-5131"))
+Description: This package comprises helper functions for the code supplement
+    to the package Registration for Incomplete Non-Gaussian Functional Data.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: 
+    checkmate,
+    dplyr,
+    registr,
+    cowplot,
+    mgcv,
+    fdasrvf,
+    ggplot2

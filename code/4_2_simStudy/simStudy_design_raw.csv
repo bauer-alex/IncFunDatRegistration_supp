@@ -1,0 +1,4 @@
+distribution,amplitude_rank,incompleteness_strength,correlation_structure
+gaussian,Rank 1,CC,ID
+gamma,Rank 2-3,WIC,AP
+,Rank 3-4,SIC,AI
