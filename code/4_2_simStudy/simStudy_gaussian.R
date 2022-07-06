@@ -19,7 +19,7 @@ n_cores             <- 20  # number of cores to use for parallelization
 n_repls             <- 100 # number of replications of each simulation setting
 
 # create combinations of all simulation settings
-sim_design_settings    <- read.csv("sim_study_design_raw.csv", na.strings = "")
+sim_design_settings    <- read.csv("simStudy_design_raw.csv", na.strings = "")
 sim_design <- expand.grid(distribution            = sim_design_settings$distribution[!is.na(sim_design_settings$distribution)],
                           amplitude_rank          = sim_design_settings$amplitude_rank[!is.na(sim_design_settings$amplitude_rank)],
                           incompleteness_strength = sim_design_settings$incompleteness_strength[!is.na(sim_design_settings$incompleteness_strength)],
