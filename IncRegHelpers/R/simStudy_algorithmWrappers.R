@@ -1,5 +1,5 @@
 
-### TODO If the simulation study should be run without fixing the number of FPCs,
+### NOTE If the simulation study should be run without fixing the number of FPCs,
 #        but estimating it adaptively, the three rows in this code file where
 #        'npc_criterion' is defined have to be uncommented.
 

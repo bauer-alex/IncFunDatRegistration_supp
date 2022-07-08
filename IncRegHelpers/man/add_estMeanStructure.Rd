@@ -40,9 +40,9 @@ warping functions. \cr
 With this information \code{"value"} and \code{"value_est"} can be directly
 compared since both refer to the (true and estimated) mean structures
 evaluated on the observed domain. \cr
-Note: If \code{reg_fpca_obj} was computed with \code{align_fPCA},
+Note: If \code{reg_obj} was computed with \code{align_fPCA},
 the \code{"value_est"} values are computed by first extracting the estimated
-mean structure from the \code{reg_fpca_obj} object and then linearly
+mean structure from the \code{reg_obj} object and then linearly
 interpolating it.
 }
 }

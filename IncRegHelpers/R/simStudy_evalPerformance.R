@@ -90,9 +90,9 @@ eval_meanStructure <- function(dat_sim, reg_obj, registr_fpcaType, srvf_regularG
 #' With this information \code{"value"} and \code{"value_est"} can be directly
 #' compared since both refer to the (true and estimated) mean structures
 #' evaluated on the observed domain. \cr
-#' Note: If \code{reg_fpca_obj} was computed with \code{align_fPCA},
+#' Note: If \code{reg_obj} was computed with \code{align_fPCA},
 #' the \code{"value_est"} values are computed by first extracting the estimated
-#' mean structure from the \code{reg_fpca_obj} object and then linearly
+#' mean structure from the \code{reg_obj} object and then linearly
 #' interpolating it.
 #' 
 #' @inheritParams eval_meanStructure
@@ -108,17 +108,17 @@ add_estMeanStructure <- function(dat_trueMean, reg_obj, srvf_regularGrid) {
   ids <- as.character(unique(dat_trueMean$id))
   
   # basic data prep and ensure appropriate sorting of the data
-  if (class(reg_fpca_obj) == "registration") { # result of registr::register_fpca()
-    dat_estWarping <- reg_fpca_obj$Y %>%
+  if (class(reg_obj) == "registration") { # result of registr::register_fpca()
+    dat_estWarping <- reg_obj$Y %>%
       dplyr::rename(index_observed = index, index_internal_est = t_hat) %>%
       arrange(id, index_observed)
     dat_trueMean <- dat_trueMean %>% arrange(id, index_observed) %>%
       mutate(index_internal_est = dat_estWarping$index_internal_est)
     
-  } else if (class(reg_fpca_obj) == "list") { # result of fdasrvf::align_fPCA()
-    dat_estWarping <- data.frame(id                 = rep(levels(dat_trueMean$id), each = nrow(reg_fpca_obj$gam)),
-                                 index_observed     = as.vector(reg_fpca_obj$gam),
-                                 index_internal_est = rep(srvf_regularGrid, times = ncol(reg_fpca_obj$gam))) %>%
+  } else if (class(reg_obj) == "list") { # result of fdasrvf::align_fPCA()
+    dat_estWarping <- data.frame(id                 = rep(levels(dat_trueMean$id), each = nrow(reg_obj$gam)),
+                                 index_observed     = as.vector(reg_obj$gam),
+                                 index_internal_est = rep(srvf_regularGrid, times = ncol(reg_obj$gam))) %>%
       arrange(id, index_observed)
     # for each id: linearly interpolate the estimated warping function to add it to dat_trueMean
     dat_trueMean <- dat_trueMean %>% arrange(id, index_observed)
@@ -132,17 +132,17 @@ add_estMeanStructure <- function(dat_trueMean, reg_obj, srvf_regularGrid) {
   
   
   # extract the individual 'global mean + individual FPC structure' curves
-  if (class(reg_fpca_obj) == "registration") { # result of registr::register_fpca()
-    dat_estMean  <- reg_fpca_obj$fpca_obj$Yhat %>%
+  if (class(reg_obj) == "registration") { # result of registr::register_fpca()
+    dat_estMean  <- reg_obj$fpca_obj$Yhat %>%
       arrange(id, index) %>%
       dplyr::rename(index_internal_est = index, value_est = value)
     
-  } else if (class(reg_fpca_obj) == "list") { # result of fdasrvf::align_fPCA()
+  } else if (class(reg_obj) == "list") { # result of fdasrvf::align_fPCA()
     dat_estMean_list <- lapply(1:length(ids), function(i) {
-      npc <- ncol(reg_fpca_obj$vfpca$coef)
-      y_srvfSpace <- reg_fpca_obj$mqn
+      npc <- ncol(reg_obj$vfpca$coef)
+      y_srvfSpace <- reg_obj$mqn
       for (j in 1:npc) {
-        y_srvfSpace <- y_srvfSpace + reg_fpca_obj$vfpca$coef[i,j] * reg_fpca_obj$vfpca$U[1:length(reg_fpca_obj$mqn),j]
+        y_srvfSpace <- y_srvfSpace + reg_obj$vfpca$coef[i,j] * reg_obj$vfpca$U[1:length(reg_obj$mqn),j]
       }
       # Problem:  In srsf_to_f() some f0 value has to be chosen which sets the initial value of the transformed curve.
       # Solution: First use the default 'f0 = 0'. Then use the difference between the transformed curve's mean
