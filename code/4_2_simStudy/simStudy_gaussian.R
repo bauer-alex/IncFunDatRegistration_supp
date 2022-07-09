@@ -12,6 +12,8 @@ library(IncRegHelpers) # helper functions
 #         but estimating it adaptively, the three rows in the helper file
 #         'algorithm_wrappers.R' (under 'IncRegHelpers/R/') where 'npc_criterion'
 #         is defined have to be uncommented manually.
+sim_type <- "npcFixed" # either "npcFixed" or "npcSelection". Only for naming the results files.
+
 
 # general settings
 max_iterations      <- 100 # maximum number of joint iterations
@@ -87,6 +89,6 @@ waitForJobs()
 
 ids  <- findExperiments(prob.name = "joint_approach")
 pars <- unwrap(getJobPars()) %>% as_tibble()
-saveRDS(pars, file = "../../results/simStudy_gaussian_pars.rds")
+saveRDS(pars, file = paste0("../../results/simStudy_",sim_type,"_gaussian_pars.rds"))
 res <- reduceResultsDataTable(ids=findDone(ids))
-saveRDS(res, file = "../../results/simStudy_gaussian.rds")
+saveRDS(res, file = paste0("../../results/simStudy_",sim_type,"_gaussian.rds"))
