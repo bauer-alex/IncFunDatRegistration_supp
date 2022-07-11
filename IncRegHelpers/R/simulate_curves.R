@@ -7,7 +7,7 @@
 #' @param N Number of curves to simulate. Defaults to 20.
 #' @param n_timeGrid Number of (regular) evaluation points over the complete
 #' time grid. Defaults to 50.
-#' @param distribution One of \code{c("gaussian","gamma")}, specifying the
+#' @param distribution One of \code{c("gaussian","t","gamma")}, specifying the
 #' distribution of the data. Defaults to \code{"gaussian"}.
 #' @param random_warping Indicator if the regular time grid should be randomly
 #' warped. Defaults to \code{FALSE}.
@@ -57,7 +57,7 @@ simulate_curves <- function(N                             = 20,
   
   checkmate::assert_integerish(N)
   checkmate::assert_integerish(n_timeGrid)
-  checkmate::assert_choice(distribution, choices = c("gaussian","gamma"))
+  checkmate::assert_choice(distribution, choices = c("gaussian","t","gamma"))
   checkmate::assert_logical(random_warping)
   checkmate::assert_logical(incompleteness)
   checkmate::assert_numeric(incompleteness_rate, lower = 0, upper = 1)
@@ -114,6 +114,11 @@ simulate_curves <- function(N                             = 20,
   if (distribution == "gaussian") {
     sd <- 0.03 # fix the standard deviation to some value
     list_y <- lapply(1:N, function(i) { rnorm(n = n_timeGrid, mean = list_mean[[i]], sd = sd) })
+    
+  } else if (distribution == "t") {
+    df <- 3 # fix the degrees of freedom to some value
+    gaussian_sd <- 0.03 # make the simulated t values comparable to the utilized gaussian distribution
+    list_y <- lapply(1:N, function(i) { list_mean[[i]] + gaussian_sd * rt(n = n_timeGrid, df = df) })
     
   } else if (distribution == "gamma") {
     # apply exp() as response function to ensure strict positivity

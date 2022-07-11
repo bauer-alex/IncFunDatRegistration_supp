@@ -1,6 +1,6 @@
 Package: IncRegHelpers
 Title: Helper functions for the code supplement
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: 
     person("Alexander", "Bauer", role = c("aut", "cre"),
            email = "alexander.bauer@stat.uni-muenchen.de",

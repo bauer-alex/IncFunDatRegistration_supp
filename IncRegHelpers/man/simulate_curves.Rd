@@ -23,7 +23,7 @@ simulate_curves(
 \item{n_timeGrid}{Number of (regular) evaluation points over the complete
 time grid. Defaults to 50.}
 
-\item{distribution}{One of \code{c("gaussian","gamma")}, specifying the
+\item{distribution}{One of \code{c("gaussian","t","gamma")}, specifying the
 distribution of the data. Defaults to \code{"gaussian"}.}
 
 \item{random_warping}{Indicator if the regular time grid should be randomly
