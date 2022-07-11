@@ -174,9 +174,6 @@ varEMWithIncompleteness_wrapper <- function(data, job, instance, lambda_inc = 0,
     incompleteness <- NULL
   }
   
-  distribution <- ifelse(instance$sim_settings$distribution == "t", "gaussian",
-                         instance$sim_settings$distribution)
-  
   if (is.null(distribution_reg))
     distribution_reg <- instance$sim_settings$distribution
   
