@@ -31,9 +31,10 @@ sim_design <- expand.grid(distribution            = sim_design_settings$distribu
 sim_design$N <- 100         # number of curves
 sim_design$n_timeGrid <- 50 # number of measurements per curve
 
-# drop unrealistic combinations: complete curves with a correlation between amplitude and incompleteness
+# drop unrealistic combinations: complete curves with a correlation between amplitude/phase and incompleteness
 sim_design <- sim_design %>%
-  filter(!(incompleteness_strength == "CC" & correlation_structure == "AI"))
+  filter(!(incompleteness_strength == "CC" & correlation_structure == "AI"),
+         !(incompleteness_strength == "CC" & correlation_structure == "PI"))
 
 
 
