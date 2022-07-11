@@ -33,7 +33,17 @@
 #' (specifically the length of the curve). This parameter doesn't lead to the
 #' two measures having exactly the specified correlation, but should be seen as
 #' a general parameter, higher (absolute) values of which lead to a clearer
-#' association. Can have values between -1 and 1. Defaults to 0.
+#' association. Can have values between -1 and 1. Defaults to 0. Only one of
+#' \code{corr_amplitude_incompleteness} / \code{corr_phase_incompleteness} can
+#' be set at a time.
+#' @param corr_phase_incompleteness Optional correlation between phase variation
+#' (specifically how much the initial part of the time domain is expanded) and
+#' the curve's incompleteness (specifically the length of the curve). This
+#' parameter doesn't lead to the two measures having exactly the specified
+#' correlation, but should be seen as a general parameter, higher (absolute)
+#' values of which lead to a clearer association. Can have values between -1 and
+#' 1. Defaults to 0. Only one of \code{corr_amplitude_incompleteness} /
+#' \code{corr_phase_incompleteness} can be set at a time.
 #' @param seed Optional numeric seed for \code{\link{set.seed}}
 #' 
 #' @import checkmate dplyr registr
@@ -53,6 +63,7 @@ simulate_curves <- function(N                             = 20,
                             FPCA_structure                = NULL,
                             corr_amplitude_phase          = 0,
                             corr_amplitude_incompleteness = 0,
+                            corr_phase_incompleteness     = 0,
                             seed                          = NULL) {
   
   checkmate::assert_integerish(N)
@@ -68,6 +79,10 @@ simulate_curves <- function(N                             = 20,
   }
   checkmate::assert_numeric(corr_amplitude_phase, lower = -1, upper = 1)
   checkmate::assert_numeric(corr_amplitude_incompleteness, lower = -1, upper = 1)
+  checkmate::assert_numeric(corr_phase_incompleteness, lower = -1, upper = 1)
+  if (corr_amplitude_incompleteness != 0 & corr_phase_incompleteness != 0) {
+    stop("Only one of 'corr_amplitude_incompleteness' / 'corr_phase_incompleteness' can be set at a time.")
+  }
   checkmate::assert_integerish(seed, null.ok = TRUE)
   
   
@@ -166,10 +181,12 @@ simulate_curves <- function(N                             = 20,
     # simulate random cut-off indices in the latter part of the domain
     min_length_timeGrid <- ceiling((1 - incompleteness_rate) * n_timeGrid)
     cutOff_domain       <- min_length_timeGrid:n_timeGrid
-    if (corr_amplitude_incompleteness == 0) {
+    
+    if (corr_amplitude_incompleteness == 0 & corr_phase_incompleteness == 0) {
       indices_cutOff <- sample(x = cutOff_domain, size = N, replace = TRUE)
       
-    } else { # correlation between amplitude variation and incompleteness
+    } else if (corr_amplitude_incompleteness != 0) { # correlation between amplitude and incompleteness
+      
       # idea for if the correlation is positive (negative):
       #   if the peak of curve i is higher (smaller), make the window of potential
       #   cut-off values smaller by some random number, s.t. higher (smaller)
@@ -191,7 +208,44 @@ simulate_curves <- function(N                             = 20,
           cutOff_domain_i <- rep(cutOff_domain_i, 2) # repeat the value to prevent sample() from sampling from 1:<cutOff_domain_i>
         sample(x = cutOff_domain_i, size = 1)
       })
+      
+    } else if (corr_phase_incompleteness != 0) { # correlation between phase and incompleteness
+
+      if (random_warping) {
+        
+        # idea for if the correlation is positive (negative):
+        #   if time distortion is more positive (negative), make the window of potential
+        #   cut-off values smaller by some random number, s.t. more positive (negative)
+        #   distortions lead to more complete curves. The random number is drawn with
+        #   less variation the higher the absolute specified correlation value.
+        
+        # retrieve the time distortion around registered time 0.5 as relevant measure.
+        time0.5_index <- which.min(abs(list_timeGrid_unwarped[[1]] - .5))
+        distortions <- sapply(1:N, function(i) {
+          list_timeGrid[[i]][time0.5_index] - list_timeGrid_unwarped[[i]][time0.5_index]
+        })
+        distortions_scaled <- (distortions - min(distortions)) / diff(range(distortions))
+        
+        # draw the scaling factor as random number
+        scaling_factors <- sapply(1:N, function(i) {
+          min_value_i <- distortions_scaled[i] * abs(corr_phase_incompleteness)
+          max_value_i <- min_value_i + (1 - abs(corr_phase_incompleteness)) * (1 - min_value_i)
+          runif(1, min = min_value_i, max = max_value_i)
+        })
+        scaling_factors <- (scaling_factors - min(scaling_factors)) / diff(range(scaling_factors))
+        if (corr_phase_incompleteness < 0)
+          scaling_factors <- 1 - scaling_factors
+        indices_cutOff <- sapply(1:N, function(i) {
+          cutOff_domain_i <- cutOff_domain[ceiling(scaling_factors[i] * length(cutOff_domain)):length(cutOff_domain)]
+          cutOff_domain_i <- cutOff_domain_i[1:(floor((1 - abs(corr_phase_incompleteness)) * length(cutOff_domain_i)))]
+          if (length(cutOff_domain_i) == 1)
+            cutOff_domain_i <- rep(cutOff_domain_i, 2) # repeat the value to prevent sample() from sampling from 1:<cutOff_domain_i>
+          sample(x = cutOff_domain_i, size = 1)
+        })
+        
+      }
     }
+    
     list_timeGrid  <- lapply(1:N, function(i) { list_timeGrid[[i]][1:indices_cutOff[i]] })
     list_y         <- lapply(1:N, function(i) { list_y[[i]][1:indices_cutOff[i]] })
     list_mean_raw  <- lapply(1:N, function(i) { list_mean_raw[[i]][1:indices_cutOff[i]] })

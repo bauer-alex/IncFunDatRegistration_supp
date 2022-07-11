@@ -13,11 +13,12 @@
 #' specifying if complete curves (\code{"CC"}) should be simulated or curves
 #' with weak incompleteness (\code{"WIC"}) or strong incompleteness
 #' (\code{"SIC"}).
-#' @param correlation_structure One of \code{c("ID","AP","AI")}, specifying
+#' @param correlation_structure One of \code{c("ID","AP","AI","PI")}, specifying
 #' if amplitude, phase, and the level of incompleteness should be mutually
 #' independent (\code{"ID"}), if amplitude and phase should be correlated
-#' (\code{"AP"}) or if amplitude and the level of incompleteness should be
-#' correlated (\code{"AI"}).
+#' (\code{"AP"}),if amplitude and the level of incompleteness should be
+#' correlated (\code{"AI"}), or if phase and the level of incompleteness should
+#' be correlated (\code{"PI"}).
 #' @param N Number of curves to simulate.
 #' @param n_timeGrid Number of (regular) evaluation points over the complete
 #' time grid.
@@ -49,6 +50,7 @@ simData_wrapper <- function(data, job, distribution, amplitude_rank,
   
   corr_amplitude_phase          <- ifelse(correlation_structure == "AP", -1, 0)
   corr_amplitude_incompleteness <- ifelse(correlation_structure == "AI", 0.8, 0)
+  corr_phase_incompleteness     <- ifelse(correlation_structure == "PI", -0.8, 0)
   
   
   # perform the simulation

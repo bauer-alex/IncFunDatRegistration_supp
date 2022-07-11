@@ -432,3 +432,71 @@ gg_ai4 <- dat_ai %>%
         plot.title      = element_text(hjust = 0.5))
 plot_grid(gg_ai1, gg_ai2, gg_ai3, gg_ai4, ncol = 1)
 # ggsave("../figures/A3_simSettings_4_AI.pdf", width = 8, height = 10)
+
+
+### Correlation of phase and incompleteness (PI)
+dat_pi <- simulate_curves(N                             = 200,
+                          random_warping                = TRUE,
+                          incompleteness                = TRUE,
+                          incompleteness_rate           = 0.6,
+                          distribution                  = "gaussian",
+                          FPCA_structure                = list(n_FPCs = 1, eigenvalues = c(1)),
+                          corr_phase_incompleteness     = -0.8,
+                          seed                          = 2021)
+dat_pi <- dat_pi$data
+
+# evaluate distortion around registered time 0.5
+distortions <- sapply(unique(dat_pi$id), function(y) { 
+  x   <- dat_pi %>% filter(id == y)
+  row <- which.min(abs(x$index_raw - 0.5))
+  return(x$index[row] - x$index_raw[row])
+})
+dat_pi <- dat_pi %>%
+  mutate(distortion     = distortions[as.numeric(id)],
+         distortion_cat = cut(distortion, breaks = c(-.5, quantile(distortion, probs = c(1/3, 2/3)), .5)))
+
+gg_pi1 <- ggplot(dat_pi, aes(x = index_raw, y = value, group = id, col = distortion_cat)) +
+  geom_line(alpha = 0.2) +
+  xlim(c(0,1)) + xlab("t [registered]") +
+  ggtitle("Correlation between phase and incompleteness\nRaw curves before random warping\n(colored by phase to evaluate the correlation)") +
+  scale_color_viridis_d(end = .8) +
+  facet_wrap(~ distortion_cat) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none",
+        axis.text.x     = element_blank(),
+        strip.text      = element_blank(),
+        plot.title      = element_text(hjust = 0.5))
+gg_pi2 <- ggplot(dat_pi, aes(x = index, y = value, group = id, col = distortion_cat)) +
+  geom_line(alpha = 0.2) +
+  xlim(c(0,1)) + xlab("t* [observed]") + ggtitle("Randomly warped curves") +
+  scale_color_viridis_d(end = .8) +
+  facet_wrap(~ distortion_cat) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none",
+        axis.text.x     = element_blank(),
+        strip.text      = element_blank(),
+        plot.title      = element_text(hjust = 0.5))
+gg_pi3 <- ggplot(dat_pi, aes(x = index_raw, y = index, group = id, col = distortion_cat)) +
+  geom_line(alpha = 0.1) + geom_smooth(aes(group = distortion_cat), se = FALSE) +
+  xlim(c(0,1)) + ylim(c(0,1)) + ggtitle("Warping functions (and their means)") +
+  xlab("t [registered]") + ylab("t* [observed]") +
+  scale_color_viridis_d(end = .8) +
+  facet_wrap(~ distortion_cat) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none",
+        axis.text.x     = element_blank(),
+        strip.text      = element_blank(),
+        plot.title      = element_text(hjust = 0.5))
+gg_pi4 <- dat_pi %>%
+  group_by(id) %>%
+  mutate(index_length = length(index)) %>%
+  ggplot(aes(x = distortion_cat, y = index_length, col = distortion_cat)) + geom_violin() +
+  ylim(c(0,50)) + xlab("category based on time distortion") + ylab("# observed measurements") +
+  ggtitle("Level of (in)completeness by amplitude size") +
+  scale_color_viridis_d(end = .8) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none",
+        axis.text.x     = element_blank(),
+        plot.title      = element_text(hjust = 0.5))
+plot_grid(gg_pi1, gg_pi2, gg_pi3, gg_pi4, ncol = 1)
+# ggsave("../figures/A3_simSettings_4_PI.pdf", width = 8, height = 10)

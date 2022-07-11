@@ -14,6 +14,7 @@ simulate_curves(
   FPCA_structure = NULL,
   corr_amplitude_phase = 0,
   corr_amplitude_incompleteness = 0,
+  corr_phase_incompleteness = 0,
   seed = NULL
 )
 }
@@ -54,7 +55,20 @@ variation (specifically the maximum peak) and the curve's incompleteness
 (specifically the length of the curve). This parameter doesn't lead to the
 two measures having exactly the specified correlation, but should be seen as
 a general parameter, higher (absolute) values of which lead to a clearer
-association. Can have values between -1 and 1. Defaults to 0.}
+association. Can have values between -1 and 1. Defaults to 0. Only one of
+\code{corr_amplitude_incompleteness} / \code{corr_phase_incompleteness} can
+be set at a time.}
+
+\item{corr_phase_incompleteness}{Optional correlation between phase variation
+(specifically how much the initial part of the time domain is expanded) and
+the curve's incompleteness (specifically the length of the curve). This
+parameter doesn't lead to the two measures having exactly the specified
+correlation, but should be seen as a general parameter, higher (absolute)
+values of which lead to a clearer association. Can have values between -1 and
+\enumerate{
+\item Defaults to 0. Only one of \code{corr_amplitude_incompleteness} /
+\code{corr_phase_incompleteness} can be set at a time.
+}}
 
 \item{seed}{Optional numeric seed for \code{\link{set.seed}}}
 }

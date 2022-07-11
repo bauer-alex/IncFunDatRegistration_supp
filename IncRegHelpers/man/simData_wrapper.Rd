@@ -28,11 +28,12 @@ specifying if complete curves (\code{"CC"}) should be simulated or curves
 with weak incompleteness (\code{"WIC"}) or strong incompleteness
 (\code{"SIC"}).}
 
-\item{correlation_structure}{One of \code{c("ID","AP","AI")}, specifying
+\item{correlation_structure}{One of \code{c("ID","AP","AI","PI")}, specifying
 if amplitude, phase, and the level of incompleteness should be mutually
 independent (\code{"ID"}), if amplitude and phase should be correlated
-(\code{"AP"}) or if amplitude and the level of incompleteness should be
-correlated (\code{"AI"}).}
+(\code{"AP"}),if amplitude and the level of incompleteness should be
+correlated (\code{"AI"}), or if phase and the level of incompleteness should
+be correlated (\code{"PI"}).}
 
 \item{N}{Number of curves to simulate.}
 
