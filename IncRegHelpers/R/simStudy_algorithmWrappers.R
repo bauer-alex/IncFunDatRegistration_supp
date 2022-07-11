@@ -35,12 +35,15 @@ FGAMMWithIncompleteness_wrapper <- function(data, job, instance, lambda_inc = 0,
     incompleteness <- NULL
   }
   
+  distribution <- ifelse(instance$sim_settings$distribution == "t", "gaussian",
+                         instance$sim_settings$distribution)
+  
   # new registr code
   runtime <- system.time({
     reg <- register_fpca(Y                            = instance$data,
                          Kt                           = 8,
                          Kh                           = 4,
-                         family                       = instance$sim_settings$distribution,
+                         family                       = distribution,
                          incompleteness               = incompleteness,
                          lambda_inc                   = lambda_inc,
                          fpca_type                    = "two-step",
@@ -48,7 +51,7 @@ FGAMMWithIncompleteness_wrapper <- function(data, job, instance, lambda_inc = 0,
                          npc                          = instance$sim_settings$npc,
                          # npc_criterion                = c(.9, .02),
                          max_iterations               = max_iterations,
-                         gradient                     = ifelse(instance$sim_settings$distribution == "gaussian", TRUE, FALSE),
+                         gradient                     = ifelse(distribution == "gaussian", TRUE, FALSE),
                          cores                        = n_cores)
   })
   
@@ -71,7 +74,7 @@ FGAMMWithIncompleteness_wrapper <- function(data, job, instance, lambda_inc = 0,
   # --- 2.2) Performance of the estimation of the global mean
   #          (without the curve-specific FPC structure)
   MSE_globalMean <- eval_globalMean(dat_sim          = instance$data,
-                                    distribution     = instance$sim_settings$distribution,
+                                    distribution     = distribution,
                                     reg_obj          = reg,
                                     registr_fpcaType = "two-step")
   
@@ -151,7 +154,8 @@ FGAMM_wrapper <- function(data, job, instance, max_iterations, n_cores) {
 #' @param distribution_reg Optional distribution (one of \code{c("gaussian","gamma")})
 #' to be used in the registration step of \code{\link[registr]{register_fpca}}
 #' instead of the original distribution of the simulated data found in
-#' \code{instance$sim_settings$distribution}.
+#' \code{instance$sim_settings$distribution}. When specified as \code{"t"} the
+#' method is run with \code{"gaussian"} family.
 #' 
 #' @import registr
 #' @export
@@ -170,8 +174,14 @@ varEMWithIncompleteness_wrapper <- function(data, job, instance, lambda_inc = 0,
     incompleteness <- NULL
   }
   
+  distribution <- ifelse(instance$sim_settings$distribution == "t", "gaussian",
+                         instance$sim_settings$distribution)
+  
   if (is.null(distribution_reg))
     distribution_reg <- instance$sim_settings$distribution
+  
+  distribution_reg <- ifelse(distribution_reg == "t", "gaussian", distribution_reg)
+  
   
   runtime <- system.time({
     reg <- register_fpca(Y                         = instance$data,
@@ -311,6 +321,9 @@ srvf_wrapper <- function(data, job, instance, max_iterations, n_cores) {
   npc_criterion <- NULL
   # npc_criterion <- .9
   
+  distribution <- ifelse(instance$sim_settings$distribution == "t", "gaussian",
+                         instance$sim_settings$distribution)
+  
   
   # preparation: create regular grid ----------------------------------------
   regular_grid <- seq(min(instance$data$index), max(instance$data$index),
@@ -318,7 +331,7 @@ srvf_wrapper <- function(data, job, instance, max_iterations, n_cores) {
   
   # linearly interpolate the randomly warped curves to obtain measurements on a
   # regular grid for align_fPCA.
-  if (instance$sim_settings$distribution == "gamma") {
+  if (distribution == "gamma") {
     family_mgcv <- mgcv::Tweedie(p = 2)
   } else { # gaussian
     family_mgcv <- gaussian()
@@ -390,7 +403,7 @@ srvf_wrapper <- function(data, job, instance, max_iterations, n_cores) {
   #          (without the curve-specific FPC structure)
   MSE_globalMean <- eval_globalMean(dat_sim        = instance$data,
                                     dat_simRegular = dat_regular,
-                                    distribution   = instance$sim_settings$distribution,
+                                    distribution   = distribution,
                                     reg_obj        = reg)
   
   
