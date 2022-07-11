@@ -1,5 +1,5 @@
 distribution,amplitude_rank,incompleteness_strength,correlation_structure
 gaussian,Rank 1,CC,ID
 t,Rank 2-3,WIC,AP
-gamma,Rank 3-4,SIC,AI
-,,,PI
+t_strongerNoise,Rank 3-4,SIC,AI
+gamma,,,PI

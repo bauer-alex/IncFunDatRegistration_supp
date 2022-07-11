@@ -34,10 +34,11 @@ plot_grid(gg_gaussian1, gg_gaussian2, gg_gaussian3, nrow = 1)
 
 
 ### t distribution
-dat_t <- simulate_curves(N              = 30,
-                         random_warping = TRUE,
-                         distribution   = "t",
-                         seed           = 2020)
+dat_t <- simulate_curves(N                = 30,
+                         random_warping   = TRUE,
+                         distribution     = "t",
+                         tDistribution_df = 3,
+                         seed             = 2020)
 
 gg_t1 <- ggplot(dat_t, aes(x = index_raw, y = value, group = id)) +
   geom_line(col = "dodgerblue4", alpha = 0.2) + xlim(c(0,1)) +
@@ -51,6 +52,27 @@ gg_t3 <- ggplot(dat_t, aes(x = index_raw, y = index)) +
   ggtitle("Warping functions (and their mean)\nt structure")
 plot_grid(gg_t1, gg_t2, gg_t3, nrow = 1)
 # ggsave("../figures/A3_simSettings_1_tDist.pdf", width = 15, height = 4)
+
+
+### t Distribution with lower df -> stronger noise
+dat_t2 <- simulate_curves(N                = 30,
+                          random_warping   = TRUE,
+                          distribution     = "t",
+                          tDistribution_df = 1.9,
+                          seed             = 2020)
+
+gg_t21 <- ggplot(dat_t2, aes(x = index_raw, y = value, group = id)) +
+  geom_line(col = "dodgerblue4", alpha = 0.2) + xlim(c(0,1)) +
+  xlab("t [registered]") + ggtitle("Raw curves before random warping\nt structure")
+gg_t22 <- ggplot(dat_t2, aes(x = index, y = value, group = id)) +
+  geom_line(col = "dodgerblue4", alpha = 0.2) + xlim(c(0,1)) +
+  xlab("t* [observed]") + ggtitle("Randomly warped curves\nt structure")
+gg_t23 <- ggplot(dat_t2, aes(x = index_raw, y = index)) +
+  geom_line(aes(group = id), col = "dodgerblue4", alpha = 0.2) + geom_smooth(se = FALSE) +
+  xlim(c(0,1)) + ylim(c(0,1)) + xlab("t [registered]") + ylab("t* [observed]") +
+  ggtitle("Warping functions (and their mean)\nt structure")
+plot_grid(gg_t21, gg_t22, gg_t23, nrow = 1)
+# ggsave("../figures/A3_simSettings_1_tDist_strongerNoise.pdf", width = 15, height = 4)
 
 
 ### Gamma distribution

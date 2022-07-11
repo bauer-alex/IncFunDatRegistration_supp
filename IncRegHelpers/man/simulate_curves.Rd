@@ -8,6 +8,7 @@ simulate_curves(
   N = 20,
   n_timeGrid = 50,
   distribution = "gaussian",
+  tDistribution_df = 3,
   random_warping = FALSE,
   incompleteness = FALSE,
   incompleteness_rate = 0.5,
@@ -26,6 +27,10 @@ time grid. Defaults to 50.}
 
 \item{distribution}{One of \code{c("gaussian","t","gamma")}, specifying the
 distribution of the data. Defaults to \code{"gaussian"}.}
+
+\item{tDistribution_df}{If \code{distribution = "t"}, the degrees of freedom
+for the t distributed white noise simulated with \code{\link{rt}}. Defaults
+to 3.}
 
 \item{random_warping}{Indicator if the regular time grid should be randomly
 warped. Defaults to \code{FALSE}.}

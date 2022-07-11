@@ -29,7 +29,8 @@ of \code{register_fpca}.}
 \item{distribution_reg}{Optional distribution (one of \code{c("gaussian","gamma")})
 to be used in the registration step of \code{\link[registr]{register_fpca}}
 instead of the original distribution of the simulated data found in
-\code{instance$sim_settings$distribution}.}
+\code{instance$sim_settings$distribution}. When specified as \code{"t"} the
+method is run with \code{"gaussian"} family.}
 }
 \value{
 List with performance criteria.

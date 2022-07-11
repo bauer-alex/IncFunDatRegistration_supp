@@ -9,6 +9,9 @@
 #' time grid. Defaults to 50.
 #' @param distribution One of \code{c("gaussian","t","gamma")}, specifying the
 #' distribution of the data. Defaults to \code{"gaussian"}.
+#' @param tDistribution_df If \code{distribution = "t"}, the degrees of freedom
+#' for the t distributed white noise simulated with \code{\link{rt}}. Defaults
+#' to 3.
 #' @param random_warping Indicator if the regular time grid should be randomly
 #' warped. Defaults to \code{FALSE}.
 #' @param incompleteness,incompleteness_rate Indicator if simulated curves
@@ -57,6 +60,7 @@
 simulate_curves <- function(N                             = 20,
                             n_timeGrid                    = 50,
                             distribution                  = "gaussian",
+                            tDistribution_df              = 3,
                             random_warping                = FALSE,
                             incompleteness                = FALSE,
                             incompleteness_rate           = 0.5,
@@ -69,6 +73,7 @@ simulate_curves <- function(N                             = 20,
   checkmate::assert_integerish(N)
   checkmate::assert_integerish(n_timeGrid)
   checkmate::assert_choice(distribution, choices = c("gaussian","t","gamma"))
+  checkmate::assert_numeric(tDistribution_df, lower = 1)
   checkmate::assert_logical(random_warping)
   checkmate::assert_logical(incompleteness)
   checkmate::assert_numeric(incompleteness_rate, lower = 0, upper = 1)
@@ -131,9 +136,8 @@ simulate_curves <- function(N                             = 20,
     list_y <- lapply(1:N, function(i) { rnorm(n = n_timeGrid, mean = list_mean[[i]], sd = sd) })
     
   } else if (distribution == "t") {
-    df <- 3 # fix the degrees of freedom to some value
     gaussian_sd <- 0.03 # make the simulated t values comparable to the utilized gaussian distribution
-    list_y <- lapply(1:N, function(i) { list_mean[[i]] + gaussian_sd * rt(n = n_timeGrid, df = df) })
+    list_y <- lapply(1:N, function(i) { list_mean[[i]] + gaussian_sd * rt(n = n_timeGrid, df = tDistribution_df) })
     
   } else if (distribution == "gamma") {
     # apply exp() as response function to ensure strict positivity

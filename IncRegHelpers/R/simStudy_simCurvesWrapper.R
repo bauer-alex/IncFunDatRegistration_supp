@@ -34,6 +34,11 @@ simData_wrapper <- function(data, job, distribution, amplitude_rank,
                             N, n_timeGrid) {
   
   # translate the simulation settings to some specifics
+  tDistribution_df <- ifelse(distribution == "t_strongerNoise", 2, 3)
+  if (distribution == "t_strongerNoise") {
+    distribution <- "t"
+  }
+  
   if (amplitude_rank == "Rank 1") {
     npc            <- 1
     FPCA_structure <- list(n_FPCs = npc, eigenvalues = 1)
@@ -57,6 +62,7 @@ simData_wrapper <- function(data, job, distribution, amplitude_rank,
   sim_list <- simulate_curves(N                             = N,
                               n_timeGrid                    = n_timeGrid,
                               distribution                  = distribution,
+                              tDistribution_df              = tDistribution_df,
                               random_warping                = TRUE,
                               FPCA_structure                = FPCA_structure,
                               incompleteness                = incompleteness,
