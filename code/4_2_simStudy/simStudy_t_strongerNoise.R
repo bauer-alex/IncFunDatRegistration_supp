@@ -10,8 +10,9 @@ library(IncRegHelpers) # helper functions
 
 ### Note: If the simulation study should be run without fixing the number of FPCs,
 #         but estimating it adaptively, the three rows in the helper file
-#         'algorithm_wrappers.R' (under 'IncRegHelpers/R/') where 'npc_criterion'
-#         is defined have to be uncommented manually.
+#         'simStudy_algorithm_wrappers.R' (under 'IncRegHelpers/R/') where
+#         'npc_criterion' is defined have to be uncommented manually and the
+#         'IncRegHelpers' package has to be reinstalled on the system.
 sim_type <- "npcFixed" # either "npcFixed" or "npcSelection". Only for naming the results files.
 
 

@@ -78,6 +78,40 @@ plot_results_simStudy(pars_t, res_t, corr_structure = "PI",
 
 
 
+# t distribution with stronger noise results for fixed npc ----------------
+pars_t_noise <- readRDS("../results/simStudy_npcFixed_t_strongerNoise_pars.rds")
+res_t_noise  <- readRDS("../results/simStudy_npcFixed_t_strongerNoise.rds")
+
+plot_results_simStudy(pars_t_noise, res_t_noise, corr_structure = "ID", log_scale = TRUE, base_size = 16)
+# ggsave("../figures/4_2_t_noise_corrID.pdf", width = 11, height = 8, device = cairo_pdf)
+plot_results_simStudy(pars_t_noise, res_t_noise, corr_structure = "AP", log_scale = TRUE, base_size = 16)
+# ggsave("../figures/A3_t_noise_corrAP.pdf", width = 11, height = 8, device = cairo_pdf)
+plot_results_simStudy(pars_t_noise, res_t_noise, corr_structure = "AI", log_scale = TRUE, base_size = 16)
+# ggsave("../figures/A3_t_noise_corrAI.pdf", width = 10, height = 8, device = cairo_pdf)
+plot_results_simStudy(pars_t_noise, res_t_noise, corr_structure = "PI", log_scale = TRUE, base_size = 16)
+# ggsave("../figures/A3_t_noise_corrPI.pdf", width = 10, height = 8, device = cairo_pdf)
+
+
+
+# t distribution with stronger noise results for adaptively estimated npc -----
+pars_t_noise <- readRDS("../results/simStudy_npcSelection_t_strongerNoise_pars.rds")
+res_t_noise  <- readRDS("../results/simStudy_npcSelection_t_strongerNoise.rds")
+
+plot_results_simStudy(pars_t_noise, res_t_noise, corr_structure = "ID",
+                      log_scale = TRUE, show_allMeasures = TRUE, base_size = 16)
+# ggsave("../figures/A3_npcSelection_t_noise_corrID.pdf", width = 11, height = 9, device = cairo_pdf)
+plot_results_simStudy(pars_t_noise, res_t_noise, corr_structure = "AP",
+                      log_scale = TRUE, show_allMeasures = TRUE, base_size = 16)
+# ggsave("../figures/A3_npcSelection_t_noise_corrAP.pdf", width = 11, height = 9, device = cairo_pdf)
+plot_results_simStudy(pars_t_noise, res_t_noise, corr_structure = "AI",
+                      log_scale = TRUE, show_allMeasures = TRUE, base_size = 16)
+# ggsave("../figures/A3_npcSelection_t_noise_corrAI.pdf", width = 10, height = 9, device = cairo_pdf)
+plot_results_simStudy(pars_t_noise, res_t_noise, corr_structure = "PI",
+                      log_scale = TRUE, show_allMeasures = TRUE, base_size = 16)
+# ggsave("../figures/A3_npcSelection_t_noise_corrPI.pdf", width = 10, height = 9, device = cairo_pdf)
+
+
+
 # gamma results for fixed npc ---------------------------------------------
 pars_gamma <- readRDS("../results/simStudy_npcFixed_gamma_pars.rds")
 res_gamma  <- readRDS("../results/simStudy_npcFixed_gamma.rds")
