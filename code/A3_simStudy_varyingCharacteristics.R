@@ -63,14 +63,14 @@ dat_t2 <- simulate_curves(N                = 30,
 
 gg_t21 <- ggplot(dat_t2, aes(x = index_raw, y = value, group = id)) +
   geom_line(col = "dodgerblue4", alpha = 0.2) + xlim(c(0,1)) +
-  xlab("t [registered]") + ggtitle("Raw curves before random warping\nt structure")
+  xlab("t [registered]") + ggtitle("Raw curves before random warping\nt structure with stronger noise")
 gg_t22 <- ggplot(dat_t2, aes(x = index, y = value, group = id)) +
   geom_line(col = "dodgerblue4", alpha = 0.2) + xlim(c(0,1)) +
-  xlab("t* [observed]") + ggtitle("Randomly warped curves\nt structure")
+  xlab("t* [observed]") + ggtitle("Randomly warped curves\nt structure with stronger noise")
 gg_t23 <- ggplot(dat_t2, aes(x = index_raw, y = index)) +
   geom_line(aes(group = id), col = "dodgerblue4", alpha = 0.2) + geom_smooth(se = FALSE) +
   xlim(c(0,1)) + ylim(c(0,1)) + xlab("t [registered]") + ylab("t* [observed]") +
-  ggtitle("Warping functions (and their mean)\nt structure")
+  ggtitle("Warping functions (and their mean)\nt structure with stronger noise")
 plot_grid(gg_t21, gg_t22, gg_t23, nrow = 1)
 # ggsave("../figures/A3_simSettings_1_tDist_strongerNoise.pdf", width = 15, height = 4)
 
